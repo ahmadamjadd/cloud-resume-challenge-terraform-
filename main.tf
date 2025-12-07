@@ -49,3 +49,22 @@ resource "aws_s3_bucket_policy" "secure_policy" {
     ]
   })
 }
+
+# =========================================================================
+# 5. THE DATA (Seed Item)
+#    This creates the initial row in the database with 0 views.
+# =========================================================================
+resource "aws_dynamodb_table_item" "item_one" {
+  # 1. Which table?
+  table_name = aws_dynamodb_table.resume.name
+  
+  # 2. Which row? (Must match the Primary Key of the table)
+  hash_key   = aws_dynamodb_table.resume.hash_key
+
+  # 3. What data?
+  # IMPORTANT: This MUST match the Key in your Python code ('id': '1')
+  item = jsonencode({
+    "id": {"S": "1"}, 
+    "views": {"N": "0"} 
+  })
+}

@@ -1,3 +1,12 @@
+# 1. The "ID Badge" (Origin Access Control)
+resource "aws_cloudfront_origin_access_control" "resume_oac" {
+  name                              = "resume-oac"
+  description                       = "Secure OAC for Resume Website"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudfront_distribution" "resume_cdn" {
   enabled             = true
   # "is_ipv6_enabled" is optional. Deleted.
