@@ -21,7 +21,7 @@ The goal is to move beyond the console and build a production-ready application 
 - [x] Configured S3 Bucket with Terraform.
 - [x] Enabled Static Website Hosting.
 - [x] Applied strict Bucket Policies (No public write access).
-- [ ] **Next:** Secure content delivery via CloudFront (HTTPS).
+- [x] **Next:** Secure content delivery via CloudFront (HTTPS).
 
 ### Phase 2: The Backend (Upcoming) 🚧
 - [ ] Create DynamoDB table for visitor counter.
