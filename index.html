@@ -26,8 +26,7 @@
     <script>
         // ⚠️ IMPORTANT: Replace the URL below with your actual API Gateway Invoke URL.
         // It must end with the final path (e.g., / or /count) that you configured.
-        const apiUrl = "https://4qxgetbsmc.execute-api.ap-south-1.amazonaws.com/"; 
-
+        const apiUrl = "${api_gateway_url}";    
         async function updateCounter() {
             try {
                 // We use POST because the request is changing the database state (+1).

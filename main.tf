@@ -23,6 +23,7 @@ resource "aws_s3_object" "index_file" {
   key          = "index.html"
   source       = "index.html"  # Path to file on your laptop
   content_type = "text/html"   # Crucial! Otherwise browser downloads it instead of showing it
+  etag         = filemd5("index.html")
 }
 
 # NEW SECURE POLICY (Only allows CloudFront)

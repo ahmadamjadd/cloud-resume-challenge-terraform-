@@ -102,7 +102,7 @@ resource "aws_apigatewayv2_api" "http_api" {
   cors_configuration {
     allow_origins = ["*"] 
     allow_methods = ["POST", "OPTIONS"] # Allow POST for the counter, OPTIONS for browser check
-    allow_headers = ["content-type"]
+    allow_headers = ["*"]
     max_age       = 300
   }
 }
@@ -119,7 +119,7 @@ resource "aws_apigatewayv2_integration" "lambda_integration" {
 # 4c. The Route (The Path: e.g., POST /)
 resource "aws_apigatewayv2_route" "count_route" {
   api_id    = aws_apigatewayv2_api.http_api.id
-  route_key = "POST /" # Consistent with your last successful setup
+  route_key = "POST /count" # Consistent with your last successful setup
   target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 

@@ -51,3 +51,32 @@ resource "aws_cloudfront_distribution" "resume_cdn" {
     cloudfront_default_certificate = true
   }
 }
+# Resource to define a short 60-second cache lifetime
+resource "aws_cloudfront_cache_policy" "short_ttl_policy" {
+  name    = "resume-short-ttl-60s"
+  comment = "Policy for quick static content updates."
+  
+  # Set the default, min, and max TTL to 60 seconds (1 minute)
+  default_ttl = 60
+  max_ttl     = 60
+  min_ttl     = 60
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    enable_accept_encoding_gzip = true
+    
+    cookies_config {
+      cookie_behavior = "none"
+    }
+    headers_config {
+      header_behavior = "none"
+    }
+    query_strings_config {
+      query_string_behavior = "none"
+    }
+  }
+}
+
+output "cloudfront_url" {
+  description = "The public URL for the CloudFront Distribution."
+  value       = aws_cloudfront_distribution.resume_cdn.domain_name
+}
