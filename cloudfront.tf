@@ -20,7 +20,7 @@ resource "aws_cloudfront_distribution" "resume_cdn" {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "my-s3-origin"
-    
+
     forwarded_values {
       query_string = false
       cookies {
@@ -43,16 +43,16 @@ resource "aws_cloudfront_distribution" "resume_cdn" {
 }
 
 resource "aws_cloudfront_cache_policy" "short_ttl_policy" {
-  name    = "resume-short-ttl-60s"
+  name  = "resume-short-ttl-60s"
   comment = "Policy for quick static content updates."
-  
+
   default_ttl = 60
   max_ttl     = 60
   min_ttl     = 60
 
   parameters_in_cache_key_and_forwarded_to_origin {
     enable_accept_encoding_gzip = true
-    
+
     cookies_config {
       cookie_behavior = "none"
     }

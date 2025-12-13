@@ -46,7 +46,7 @@ The website uses a serverless backend to track and display visitor counts dynami
 
 1.  Clone the repo:
     ```bash
-    git clone [https://github.com/ahmadamjadd/cloud-resume-challenge-terraform-.git](https://github.com/ahmadamjadd/cloud-resume-challenge-terraform-.git)
+    git clone https://github.com/ahmadamjadd/cloud-resume-challenge-terraform-.git
     cd aws-cloud-resume-infrastructure
     ```
 2.  Initialize Terraform:

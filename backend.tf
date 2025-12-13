@@ -12,7 +12,6 @@ resource "aws_dynamodb_table" "resume" {
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam_for_lambda"
 
-  # Trust Policy: Allows the Lambda service to assume this role.
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -24,7 +23,6 @@ resource "aws_iam_role" "iam_for_lambda" {
     }]
   })
 }
-
 
 resource "aws_iam_policy" "lambda_policy" {
   name        = "lambda_policy"
@@ -55,12 +53,10 @@ resource "aws_iam_policy" "lambda_policy" {
   })
 }
 
-
 resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
   role       = aws_iam_role.iam_for_lambda.name
   policy_arn = aws_iam_policy.lambda_policy.arn
 }
-
 
 data "archive_file" "zip_the_python_code" {
   type        = "zip"
@@ -69,23 +65,21 @@ data "archive_file" "zip_the_python_code" {
 }
 
 resource "aws_lambda_function" "myfunc" {
-  filename      = data.archive_file.zip_the_python_code.output_path
-  function_name = "my-resume-counter"
-  role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "func.lambda_handler"
-  runtime       = "python3.12"
-  
+  filename         = data.archive_file.zip_the_python_code.output_path
+  function_name    = "my-resume-counter"
+  role             = aws_iam_role.iam_for_lambda.arn
+  handler          = "func.lambda_handler"
+  runtime          = "python3.12"
+
   source_code_hash = data.archive_file.zip_the_python_code.output_base64sha256
 }
-
 
 resource "aws_apigatewayv2_api" "http_api" {
   name          = "resume-api"
   protocol_type = "HTTP"
 
-  # CORS Configuration (Allows frontend to call the API)
   cors_configuration {
-    allow_origins = ["*"] 
+    allow_origins = ["*"]
     allow_methods = ["POST", "OPTIONS"]
     allow_headers = ["*"]
     max_age       = 300
@@ -93,16 +87,16 @@ resource "aws_apigatewayv2_api" "http_api" {
 }
 
 resource "aws_apigatewayv2_integration" "lambda_integration" {
-  api_id           = aws_apigatewayv2_api.http_api.id
-  integration_type = "AWS_PROXY"
-  integration_uri    = aws_lambda_function.myfunc.invoke_arn 
-  integration_method = "POST"
+  api_id                 = aws_apigatewayv2_api.http_api.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.myfunc.invoke_arn
+  integration_method     = "POST"
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_route" "count_route" {
   api_id    = aws_apigatewayv2_api.http_api.id
-  route_key = "POST /count" 
+  route_key = "POST /count"
   target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
