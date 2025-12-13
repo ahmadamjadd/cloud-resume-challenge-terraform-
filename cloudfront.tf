@@ -1,4 +1,3 @@
-# 1. The "ID Badge" (Origin Access Control)
 resource "aws_cloudfront_origin_access_control" "resume_oac" {
   name                              = "resume-oac"
   description                       = "Secure OAC for Resume Website"
@@ -9,24 +8,19 @@ resource "aws_cloudfront_origin_access_control" "resume_oac" {
 
 resource "aws_cloudfront_distribution" "resume_cdn" {
   enabled             = true
-  # "is_ipv6_enabled" is optional. Deleted.
   default_root_object = "index.html"
 
-  # 1. ORIGIN: Where is the content coming from?
   origin {
     domain_name              = aws_s3_bucket.resume_bucket.bucket_regional_domain_name
     origin_id                = "my-s3-origin"
     origin_access_control_id = aws_cloudfront_origin_access_control.resume_oac.id
   }
 
-  # 2. CACHE BEHAVIOR: How should we deliver it?
-  # (Console does this automatically, but Terraform needs these rules)
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "my-s3-origin"
     
-    # This block is mandatory. It tells CloudFront "Don't use cookies" (Static sites don't need them)
     forwarded_values {
       query_string = false
       cookies {
@@ -34,29 +28,24 @@ resource "aws_cloudfront_distribution" "resume_cdn" {
       }
     }
 
-    viewer_protocol_policy = "allow-all" # Simplest setting
+    viewer_protocol_policy = "allow-all"
   }
 
-  # 3. RESTRICTIONS: Who can see it?
-  # (Mandatory block, even if you put "none")
   restrictions {
     geo_restriction {
       restriction_type = "none"
     }
   }
 
-  # 4. VIEWER CERTIFICATE: HTTPS settings
-  # (Mandatory block)
   viewer_certificate {
     cloudfront_default_certificate = true
   }
 }
-# Resource to define a short 60-second cache lifetime
+
 resource "aws_cloudfront_cache_policy" "short_ttl_policy" {
   name    = "resume-short-ttl-60s"
   comment = "Policy for quick static content updates."
   
-  # Set the default, min, and max TTL to 60 seconds (1 minute)
   default_ttl = 60
   max_ttl     = 60
   min_ttl     = 60

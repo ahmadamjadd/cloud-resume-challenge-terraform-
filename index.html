@@ -24,12 +24,10 @@
     </footer>
 
     <script>
-        // ⚠️ IMPORTANT: Replace the URL below with your actual API Gateway Invoke URL.
-        // It must end with the final path (e.g., / or /count) that you configured.
+        //Replace the URL below with your actual API Gateway Invoke URL.
         const apiUrl = "${api_gateway_url}";    
         async function updateCounter() {
             try {
-                // We use POST because the request is changing the database state (+1).
                 const response = await fetch(apiUrl, {
                     method: "POST"
                 });
@@ -37,11 +35,8 @@
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-
-                // API Gateway sends a JSON string from Lambda, so we parse it.
                 const data = await response.json(); 
                 
-                // Update the HTML element
                 document.getElementById("counter").innerText = data.count;
                 
             } catch (error) {
@@ -49,8 +44,6 @@
                 document.getElementById("counter").innerText = "Error";
             }
         }
-
-        // Run the function when the page loads
         updateCounter();
     </script>
 </body>
